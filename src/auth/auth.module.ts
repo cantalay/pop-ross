@@ -6,13 +6,14 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import * as process from 'process';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: 'JWTSECRETKEYHERE',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
     }),
   ],

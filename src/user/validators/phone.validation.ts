@@ -2,19 +2,19 @@ import {
   registerDecorator,
   ValidationArguments,
   ValidationOptions,
+  ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { PhoneNumberUtil } from 'google-libphonenumber';
+import { isValidNumber } from 'libphonenumber-js';
+
+@ValidatorConstraint()
 export class PhoneValidation implements ValidatorConstraintInterface {
   validate(value: any): Promise<boolean> | boolean {
-    return (
-      typeof value === 'string' &&
-      PhoneNumberUtil.getInstance().isValidNumber(value)
-    );
+    return typeof value === 'string' && isValidNumber(value);
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {
-    return `${validationArguments.property} is not valid phone number.`;
+    return `${validationArguments.property} is not valid.`;
   }
 }
 export function IsPhone(options?: ValidationOptions) {
