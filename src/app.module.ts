@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { ArtistModule } from './artist/artist.module';
+import { UserRoleModule } from './user-role/user-role.module';
 import * as process from 'process';
 
 @Module({
@@ -25,6 +26,7 @@ import * as process from 'process';
       logging: true,
     }),
     ArtistModule,
+    UserRoleModule,
   ],
   controllers: [AppController],
   providers: [

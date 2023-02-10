@@ -2,7 +2,7 @@ import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { RegisterRequestDto } from './dto/register-request.dto';
-import { Public } from './decorator/public.decorator';
+import { Public } from './decorators/public.decorator';
 import { LoginResponseDto } from './dto/login-response.dto';
 
 @Controller('auth')

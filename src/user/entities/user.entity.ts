@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Role } from '../../common/enums/role.enum';
 
 @Entity()
 export class User {
@@ -20,6 +21,12 @@ export class User {
 
   @Column()
   fullName: string;
+
+  @Column()
+  role: Role;
+
+  @Column()
+  artistID: ObjectID;
 
   @Column()
   @Exclude()
