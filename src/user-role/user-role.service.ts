@@ -18,11 +18,7 @@ export class UserRoleService {
   }
 
   async findOneByUserID(userID: string): Promise<UserRole> {
-    return await this.userRoleRepository.findOneBy(userID);
-  }
-
-  async findOneByArtistID(artistID: string): Promise<UserRole> {
-    return await this.userRoleRepository.findOneBy(artistID);
+    return await this.userRoleRepository.findOneBy({ userID: userID });
   }
 
   update(id: number, updateUserRoleDto: UpdateUserRoleDto) {

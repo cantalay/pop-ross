@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ArtistModule } from './artist/artist.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import * as process from 'process';
+import { RolesGuard } from './auth/guard/role.guard';
 
 @Module({
   imports: [
@@ -34,6 +35,10 @@ import * as process from 'process';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

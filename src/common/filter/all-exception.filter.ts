@@ -25,7 +25,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     let code = 'HttpException';
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    console.log(exception);
 
     switch (exception.constructor) {
       case HttpException:

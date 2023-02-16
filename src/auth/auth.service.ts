@@ -71,7 +71,6 @@ export class AuthService {
   async setPermission(userRole: Role, userID: string, adminID: string) {
     const user: User = await this.userService.findOneById(userID);
     if (user) {
-      console.log(adminID);
       const artist: Artist = await this.artistService.findByUserID(adminID);
       if (artist) {
         const createUserRoleDto: CreateUserRoleDto = {

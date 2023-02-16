@@ -13,6 +13,7 @@ import { RegisterRequestDto } from './dto/register-request.dto';
 import { Public } from './decorators/public.decorator';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { Role } from '../common/enums/role.enum';
+import { Roles } from './decorators/roles.decoorator';
 
 @Controller('auth')
 export class AuthController {
@@ -36,16 +37,16 @@ export class AuthController {
   }
 
   @Post('/set-editor/:id')
+  @Roles(Role.Admin)
   setAsEditor(@Param('id') id: string, @Req() request) {
-    return this.authService.setPermission(Role.Editor, id, request.user.userID);
+    const { user } = request;
+    return this.authService.setPermission(Role.Editor, id, user.userID);
   }
 
   @Post('/set-moderator/:id')
+  @Roles(Role.Admin, Role.Editor)
   setAsModerator(@Param('id') id: string, @Req() request) {
-    return this.authService.setPermission(
-      Role.Moderator,
-      id,
-      request.user.userID,
-    );
+    const { user } = request;
+    return this.authService.setPermission(Role.Moderator, id, user.userID);
   }
 }
