@@ -1,8 +1,10 @@
 export enum Role {
   //Just show photos and comment it
-  User = 'user',
+  Admin = 'admin',
   //As an organisation admin add photo, comment, remove comment
-  Artist = 'artist',
+  Moderator = 'moderator',
   //add comment and remove comment
   Editor = 'editor',
+
+  User = 'user',
 }

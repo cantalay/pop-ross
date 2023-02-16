@@ -22,7 +22,7 @@ export class ArtistService {
   }
 
   update(id: number, updateArtistDto: UpdateArtistDto) {
-    return `This action updates a #${id} and ${updateArtistDto.artistName} artist`;
+    return `This action updates a #${id} and ${updateArtistDto} artist`;
   }
 
   remove(id: number) {

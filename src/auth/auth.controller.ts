@@ -19,6 +19,7 @@ export class AuthController {
     loginResponseDto.token = await this.authService.login(req.user);
     return loginResponseDto;
   }
+
   @Post('register')
   @Public()
   async register(@Body() registerRequestDto: RegisterRequestDto) {

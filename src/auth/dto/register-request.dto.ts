@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from '../../user/dto/create-user.dto';
-import { IsEnum, IsStrongPassword } from 'class-validator';
+import { IsBoolean, IsEnum, IsStrongPassword } from 'class-validator';
 import { Role } from '../../common/enums/role.enum';
 
 export class RegisterRequestDto extends PartialType(CreateUserDto) {
@@ -9,4 +9,7 @@ export class RegisterRequestDto extends PartialType(CreateUserDto) {
 
   @IsEnum(Role)
   role: Role;
+
+  @IsBoolean()
+  asArtist: boolean;
 }

@@ -13,9 +13,8 @@ export class UserRoleService {
   ) {}
 
   create(createUserRoleDto: CreateUserRoleDto) {
-    const userRole: UserRole =
-      this.userRoleRepository.create(createUserRoleDto);
-    return this.userRoleRepository.save(userRole);
+    const role: UserRole = this.userRoleRepository.create(createUserRoleDto);
+    return this.userRoleRepository.save(role);
   }
 
   async findOneByUserID(userID: string): Promise<UserRole> {
