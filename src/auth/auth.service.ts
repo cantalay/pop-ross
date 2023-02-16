@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterRequestDto } from './dto/register-request.dto';
@@ -10,6 +14,7 @@ import { UserRoleService } from '../user-role/user-role.service';
 import { CreateUserRoleDto } from '../user-role/dto/create-user-role.dto';
 import { Role } from '../common/enums/role.enum';
 import { User } from '../user/entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +27,7 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.findOne(username);
-    if (user && user.password === password) {
+    if (await bcrypt.compare(password, user.password)) {
       delete user.password;
       return user;
     }
@@ -43,25 +48,45 @@ export class AuthService {
       registerRequestDto as CreateUserDto,
     );
     if (user) {
-      const userRole: CreateUserRoleDto = new CreateUserRoleDto();
-      userRole.userID = user._id;
       if (registerRequestDto.asArtist) {
         const createArtistDto: CreateArtistDto = {
           artistName: registerRequestDto.userName,
+          userID: user._id.toString(),
           artistInfo: registerRequestDto.fullName,
         };
         const artist: Artist = await this.artistService.create(createArtistDto);
         if (artist) {
-          userRole.artistID = artist._id;
-          userRole.role = Role.Admin;
+          const userRole: CreateUserRoleDto = {
+            userID: user._id.toString(),
+            artistID: artist._id.toString(),
+            role: Role.Admin,
+          };
+          await this.userRoleService.create(userRole);
         }
-      } else {
-        userRole.artistID = null;
-        userRole.role = Role.User;
       }
-
-      await this.userRoleService.create(userRole);
     }
     return user;
+  }
+
+  async setPermission(userRole: Role, userID: string, adminID: string) {
+    const user: User = await this.userService.findOneById(userID);
+    if (user) {
+      console.log(adminID);
+      const artist: Artist = await this.artistService.findByUserID(adminID);
+      if (artist) {
+        const createUserRoleDto: CreateUserRoleDto = {
+          userID: user._id.toString(),
+          artistID: artist._id.toString(),
+          role: userRole,
+        };
+        await this.userRoleService.create(createUserRoleDto);
+      } else {
+        throw new UnauthorizedException(
+          'You are not authorized for setting permission.',
+        );
+      }
+    } else {
+      throw new NotFoundException('User not found.');
+    }
   }
 }

@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -7,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -38,4 +40,9 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  async updatePassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 }

@@ -28,4 +28,10 @@ export class ArtistService {
   remove(id: number) {
     return `This action removes a #${id} artist`;
   }
+
+  findByUserID(userID: string) {
+    return this.artistRepository.findOneBy({
+      where: { userID: userID },
+    });
+  }
 }

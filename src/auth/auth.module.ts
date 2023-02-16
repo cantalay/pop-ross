@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import * as process from 'process';
 import { ArtistModule } from '../artist/artist.module';
 import { UserRoleModule } from '../user-role/user-role.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserRoleModule } from '../user-role/user-role.module';
     ArtistModule,
     UserRoleModule,
     PassportModule,
+    ConfigModule.forRoot(),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },

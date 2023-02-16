@@ -9,9 +9,11 @@ export class UserRole {
   @Column('enum', { default: Role.User })
   role: Role;
 
-  @ObjectIdColumn({ nullable: true })
-  artistID: ObjectID | null;
+  @Column()
+  artistID: string;
 
-  @ObjectIdColumn()
-  userID: ObjectID;
+  @Column({
+    unique: true,
+  })
+  userID: string;
 }

@@ -10,4 +10,9 @@ export class Artist {
 
   @Column()
   artistInfo: string;
+
+  @Column({
+    unique: true,
+  })
+  userID: string;
 }
