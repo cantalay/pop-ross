@@ -1,5 +1,6 @@
 import {
   ArgumentsHost,
+  BadRequestException,
   Catch,
   HttpException,
   HttpStatus,
@@ -29,6 +30,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     switch (exception.constructor) {
       case HttpException:
         status = (exception as HttpException).getStatus();
+        break;
+      case BadRequestException:
+        status = (exception as BadRequestException).getStatus();
+        message = (exception as BadRequestException).getResponse()['message'];
+        code = (exception as any).code;
         break;
       case QueryFailedError: // this is a TypeOrm error
         status = HttpStatus.CONFLICT;

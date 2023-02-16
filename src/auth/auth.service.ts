@@ -43,6 +43,8 @@ export class AuthService {
       registerRequestDto as CreateUserDto,
     );
     if (user) {
+      const userRole: CreateUserRoleDto = new CreateUserRoleDto();
+      userRole.userID = user._id;
       if (registerRequestDto.asArtist) {
         const createArtistDto: CreateArtistDto = {
           artistName: registerRequestDto.userName,
@@ -50,21 +52,15 @@ export class AuthService {
         };
         const artist: Artist = await this.artistService.create(createArtistDto);
         if (artist) {
-          const userRole: CreateUserRoleDto = {
-            role: Role.Admin,
-            artistID: artist._id.toString(),
-            userID: user._id.toString(),
-          };
-          await this.userRoleService.create(userRole);
+          userRole.artistID = artist._id;
+          userRole.role = Role.Admin;
         }
       } else {
-        const userRole: CreateUserRoleDto = {
-          role: Role.User,
-          artistID: null,
-          userID: user._id.toString(),
-        };
-        await this.userRoleService.create(userRole);
+        userRole.artistID = null;
+        userRole.role = Role.User;
       }
+
+      await this.userRoleService.create(userRole);
     }
     return user;
   }

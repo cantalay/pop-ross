@@ -1,5 +1,6 @@
-import { Column, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 
+@Entity()
 export class Artist {
   @ObjectIdColumn()
   _id: ObjectID;
