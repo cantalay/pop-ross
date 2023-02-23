@@ -13,4 +13,7 @@ export class Art {
 
   @Column()
   name: string;
+
+  @Column()
+  images: string[];
 }

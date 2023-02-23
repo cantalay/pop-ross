@@ -1,22 +1,21 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
-  Patch,
   Post,
   Req,
+  Request,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { ArtService } from './art.service';
 import { CreateArtDto } from './dto/create-art.dto';
-import { UpdateArtDto } from './dto/update-art.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
 import { Roles } from '../auth/decorators/roles.decoorator';
 import { Role } from '../common/enums/role.enum';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('art')
 export class ArtController {
@@ -33,23 +32,18 @@ export class ArtController {
     await this.artService.create(createArtDto, arts, request.user);
   }
 
-  @Get()
-  findAll() {
-    return this.artService.findAll();
+  @Get(':artistID/:artID/:artKey')
+  @Public()
+  findOne(
+    @Param('artistID') artistID: string,
+    @Param('artID') artID: string,
+    @Param('artKey') artKey: string,
+  ) {
+    return this.artService.getArt(artID, artistID, artKey);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.artService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArtDto: UpdateArtDto) {
-    return this.artService.update(+id, updateArtDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.artService.remove(+id);
+  @Get('/flow/:page')
+  getUserFlow(@Param('page') page = 1, @Request() req) {
+    return this.artService.userFlow(req.user.userID, page);
   }
 }

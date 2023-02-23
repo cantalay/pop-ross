@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateArtDto } from './dto/create-art.dto';
-import { UpdateArtDto } from './dto/update-art.dto';
 import { S3LoaderService } from '../s3-loader/s3-loader.service';
 import { MongoRepository } from 'typeorm';
 import { Art } from './entities/art.entity';
@@ -8,12 +7,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRoleService } from '../user-role/user-role.service';
 import { UserRole } from '../user-role/entities/user-role.entity';
 import { ArtModelInterface } from './interfaces/art-model.interface';
+import { SubscriptionService } from '../subscription/subscription.service';
+import { UserFlowResponseDto } from './dto/user-flow-response.dto';
 
 @Injectable()
 export class ArtService {
+  private readonly PAGE_SIZE: number = 10;
+
   constructor(
     private s3LoaderService: S3LoaderService,
     private userRoleService: UserRoleService,
+    private subscriptionService: SubscriptionService,
     @InjectRepository(Art)
     private artRepository: MongoRepository<Art>,
   ) {}
@@ -37,24 +41,31 @@ export class ArtService {
       await this.s3LoaderService.upload(artFiles, artistID, art._id.toString());
     } else {
       throw new UnauthorizedException(
-        'You are not an artist or editor. Please check your account.',
+        'Please check your account role. Notify me.',
       );
     }
   }
 
-  findAll() {
-    return `This action returns all art`;
+  async getArt(artID: string, artistID: string, artKey: string) {
+    return this.s3LoaderService.getFile(artistID, artID, artKey);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} art`;
-  }
-
-  update(id: number, updateArtDto: UpdateArtDto) {
-    return `This action updates a #${updateArtDto} art`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} art`;
+  async userFlow(userID: string, page: number): Promise<UserFlowResponseDto> {
+    const subscriptions = await this.subscriptionService.getUserSubscriptions(
+      userID,
+    );
+    if (subscriptions.count > 0) {
+      const artistIDS = subscriptions.data.map((value) => value.artistID);
+      const query = {
+        where: {
+          $and: [],
+        },
+        take: this.PAGE_SIZE,
+        skip: page * this.PAGE_SIZE,
+      };
+      query.where.$and.push({ artistID: { $in: [...artistIDS] } });
+      const [arts, count] = await this.artRepository.findAndCount(query);
+      return { arts: arts, count: count };
+    }
   }
 }

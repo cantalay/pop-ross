@@ -13,7 +13,7 @@ import { UserRoleModule } from './user-role/user-role.module';
 import * as process from 'process';
 import { RolesGuard } from './auth/guard/role.guard';
 import { ArtModule } from './art/art.module';
-import { S3LoaderService } from './s3-loader/s3-loader.service';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 @Module({
   imports: [
@@ -31,6 +31,7 @@ import { S3LoaderService } from './s3-loader/s3-loader.service';
     ArtistModule,
     UserRoleModule,
     ArtModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [
@@ -43,7 +44,6 @@ import { S3LoaderService } from './s3-loader/s3-loader.service';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    S3LoaderService,
   ],
 })
 export class AppModule {}
