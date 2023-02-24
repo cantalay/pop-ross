@@ -21,7 +21,16 @@ export class S3LoaderService {
           new PutObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: `${artistID}/${artID}/art-${i}.${process.env.ART_FILE_TYPE}`,
-            Body: artFiles[i],
+            Body: artFiles[i][0],
+          }),
+        ),
+      );
+      concurrentRequest.push(
+        this.s3Client.send(
+          new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: `${artistID}/${artID}/thumb/art-${i}.${process.env.ART_FILE_TYPE}`,
+            Body: artFiles[i][1],
           }),
         ),
       );

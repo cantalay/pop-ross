@@ -4,14 +4,18 @@ import * as sharp from 'sharp';
 
 @Injectable()
 export class SharpPipe implements PipeTransform<Express.Multer.File> {
-  async transform(images): Promise<Array<Uint8Array>> {
-    const sharpedImages: Uint8Array[] = [];
+  async transform(images) {
+    const sharpedImages = [];
     for (const image of images) {
       const buffer = await sharp(image.buffer)
         .resize(800)
         .webp({ effort: 3 })
         .toBuffer();
-      sharpedImages.push(buffer);
+      const thumbBuffer = await sharp(image.buffer)
+        .resize(200)
+        .webp({ effort: 3 })
+        .toBuffer();
+      sharpedImages.push([buffer, thumbBuffer]);
     }
     return sharpedImages;
   }
